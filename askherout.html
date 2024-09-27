@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Go on a Date with Me? 💖</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', sans-serif;
+            background-color: #ffebf0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            color: #ff69b4;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ff1493;
+            animation: pop 1s ease-out infinite;
+        }
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        button {
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            background-color: #ffb6c1;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s;
+        }
+        button:hover {
+            transform: scale(1.1);
+            background-color: #ff69b4;
+        }
+        #result {
+            font-size: 2rem;
+            color: #ff1493;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        #noBtn {
+            margin-left: 20px;
+            position: relative;
+        }
+        #noBtn:hover {
+            transform: translateX(20px);
+            animation: moveNoButton 0.5s ease;
+        }
+        @keyframes moveNoButton {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+            100% { transform: translateX(20px); }
+        }
+        .heart {
+            color: red;
+            animation: beat 1s ease infinite;
+        }
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Will you go on a date with me? 💖</h1>
+    
+    <div>
+        <button id="yesBtn">Yes! 💕</button>
+        <button id="noBtn">No... 😔</button>
+    </div>
+
+    <p id="result"></p>
+
+    <!-- Firebase Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Your Firebase configuration (get this from Firebase Console)
+        var firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+
+        // Capture button clicks
+        document.getElementById('yesBtn').addEventListener('click', function() {
+            document.getElementById('result').innerHTML = "Yay! It's a YES! 🎉 <span class='heart'>❤️</span>";
+            document.getElementById('result').style.opacity = 1;
+            saveResponse("yes");
+        });
+
+        document.getElementById('noBtn').addEventListener('click', function() {
+            document.getElementById('result').innerHTML = "You can't say no! It's still a YES! 😉 <span class='heart'>❤️</span>";
+            document.getElementById('result').style.opacity = 1;
+            saveResponse("no");
+        });
+
+        // Save the response to Firestore
+        function saveResponse(answer) {
+            db.collection("responses").add({
+                answer: answer,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(function() {
+                console.log("Response saved: ", answer);
+            })
+            .catch(function(error) {
+                console.error("Error saving response: ", error);
+            });
+        }
+    </script>
+</body>
+</html>
